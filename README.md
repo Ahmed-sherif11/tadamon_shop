@@ -52,12 +52,8 @@
     flutter pub get
     ```
 
-4. **توليد ملفات اللغة والترجمة (Localization):**
-    ```bash
-    flutter gen-l10n
-    ```
 
-5. **تشغيل التطبيق:**
+4. **تشغيل التطبيق:**
     ```bash
     flutter run
     ```
