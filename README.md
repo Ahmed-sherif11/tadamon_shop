@@ -120,7 +120,7 @@ git push origin dev
 ```bash
 git add .
 git commit -m "وصف واضح للتعديل الذي قمت به"
-git push -u origin feature/<short-name>
+git push origin dev
 ```
 ثم افتح **Pull Request** على GitHub من `feature/<short-name>` إلى `dev`.
 
