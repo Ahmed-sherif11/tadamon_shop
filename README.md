@@ -6,71 +6,134 @@
 
 ## 🏗️ هيكلة المشروع (Architecture)
 
-يتبع التطبيق معايير **Clean Architecture** لضمان فصل المسؤوليات وتسهيل العمل الجماعي والتوسع المستقبلي:
+يتبع التطبيق معايير **Clean Architecture** لضمان فصل المسؤوليات وتسهيل العمل الجماعي:
 
-- **Core Layer:** تحتوي على الأدوات المشتركة، معالجة الأخطاء (Failures)، وإعدادات الثيمات.
-- **Domain Layer:** القلب النابض للمشروع، ويحتوي على الـ Entities و الـ Repositories Contracts والـ Use Cases.
-- **Data Layer:** المسؤولة عن جلب البيانات من **Laravel API** وتحويلها من JSON إلى Models برمجية.
-- **Presentation Layer:** تشمل واجهات المستخدم (Screens & Widgets) وإدارة الحالة (State Management) باستخدام **Bloc**.
+- **Core Layer:** تحتوي على الأدوات المشتركة، معالجة الأخطاء، وإعدادات الثيمات.
+- **Domain Layer:** القلب النابض للمشروع، ويحتوي على الـ Entities و الـ Repositories والـ Use Cases.
+- **Data Layer:** المسؤولة عن جلب البيانات من **Laravel API** وتحويلها إلى Models برمجية.
+- **Presentation Layer:** تشمل واجهات المستخدم (Screens & Widgets) وإدارة الحالة باستخدام **Bloc**.
 
 ---
 
 ## 🛠️ التقنيات المستخدمة (Tech Stack)
 
 - **Frontend:** Flutter (Mobile, Tablet, Desktop).
-- **Backend:** Laravel / PHP.
+- **Backend:** Laravel / PHP (REST API).
 - **State Management:** Flutter Bloc.
 - **Dependency Injection:** GetIt (Service Locator).
-- **Localization:** Flutter Intl (دعم كامل للغتين العربية والإنجليزية).
-- **Design:** Responsive Framework (متوافق مع جميع أحجام الشاشات).
+- **Localization:** Flutter Intl (دعم كامل للعربية والإنجليزية).
 
 ---
 
-## 🚀 تعليمات البدء للفريق (Getting Started)
+## 🚀 تعليمات البدء والتشغيل للفريق (Getting Started)
 
-لكي يعمل المشروع لديك بدون أخطاء، يرجى اتباع الخطوات التالية بدقة:
+لكي يعمل المشروع لديك بنظام الـ Git الجديد وبدون أخطاء، يرجى اتباع هذه الخطوات بالترتيب:
 
-### 1. المتطلبات الأساسية (Prerequisites)
+### 1) المتطلبات الأساسية (Prerequisites)
 
 - تثبيت **Flutter SDK** (أحدث إصدار مستقر).
+- استخدام **VS Code** مع تثبيت إضافات: **Flutter Intl**، **Dart/Flutter**، و **Git Graph**.
+- تثبيت **Git** على جهازك.
 
-- استخدام **VS Code** مع تثبيت إضافة **Flutter Intl** وإضافة **Dart/Flutter**.
+> **ملاحظة مهمة:** GitHub لم يعد يدعم تسجيل الدخول بكلمة المرور في أوامر Git.  
+> استخدم **Personal Access Token (PAT)** بدل الباسورد، أو استخدم **SSH Keys**.
 
-### 2. خطوات التشغيل (Setup Steps)
+### 2) خطوات الفتح لأول مرة (Initial Setup Steps) ⚙️
 
-1. **تحميل المشروع:**
-
+1. **تحميل المشروع (Clone):**
     ```bash
-    git clone [https://github.com/Ahmed-sherif11/tadamon_shop.git](https://github.com/Ahmed-sherif11/tadamon_shop.git)
+    git clone https://github.com/Ahmed-sherif11/tadamon_shop.git
+    cd tadamon_shop
     ```
 
-2. **تحميل المكتبات:**
+2. **الانتقال لفرع التطوير (Switch to Dev Branch):** ⚠️  
+   **هام جداً:** نحن لا نعدل على فرع `main`. يجب الانتقال فوراً لفرع `dev`:
+    ```bash
+    git checkout dev
+    ```
 
+   إذا لم يكن الفرع موجوداً عندك محليًا (وموجود على الريموت):
+    ```bash
+    git fetch --all
+    git checkout -b dev origin/dev
+    ```
+
+3. **تحميل المكتبات البرمجية:**
     ```bash
     flutter pub get
     ```
 
-3. **توليد ملفات اللغة (Localization):**
-    هذه الخطوة ضرورية لتفادي أخطاء الأكواد المولدة تلقائياً:
-
+4. **توليد ملفات اللغة والترجمة (Localization):**
     ```bash
     flutter gen-l10n
     ```
 
-4. **تشغيل التطبيق:**
-
+5. **تشغيل التطبيق:**
     ```bash
     flutter run
     ```
 
 ---
 
-## 👥 قواعد العمل الجماعي (Team Guidelines)
+## 🔄 روتين العمل اليومي الآمن (Safe Workflow)
 
-- **مجلد Generated:** ممنوع التعديل يدوياً على أي ملف داخل `lib/generated`؛ الإضافة تتكفل بذلك تلقائياً.
-- **إضافة نصوص:** أي نص جديد يجب أن يُضاف أولاً في `lib/l10n/intl_en.arb` ثم يُترجم في `intl_ar.arb`.
-- **الالتزام بالطبقات:** يمنع كتابة أي منطق خاص بالـ API داخل الـ UI؛ مكانه الصحيح هو الـ `Data Sources`.
-- **حقن التبعيات:** أي كلاس جديد (مثل Repository أو Bloc) يجب تسجيله في ملف `injection_container.dart` باستخدام **GetIt**.
+لضمان عدم حدوث تضارب في الأكواد، اتبع هذا التسلسل يومياً:
+
+### 1️⃣ قبل البدء (Morning Update)
+
+تأكد أنك على فرع `dev` واسحب آخر تحديثات زملائك:
+
+```bash
+git checkout dev
+git pull origin dev
+```
+
+### 2️⃣ أثناء الشغل (Working)
+
+**الخيار A (سريع وبسيط):** اشتغل على `dev` مباشرة.  
+**الخيار B (المفضل والأكثر أمانًا):** اعمل فرع خاص بشغلك:
+
+```bash
+git checkout -b feature/<short-name>
+```
+
+مثال:
+
+```bash
+git checkout -b feature/login-ui
+```
+
+> لو اشتغلت على `feature/*`، ارفع الفرع وافتح **Pull Request** إلى `dev`.
+
+### 3️⃣ عند الانتهاء (End of Work)
+
+ارفع شغلك (حسب الطريقة اللي اشتغلت بيها):
+
+#### ✅ لو شغال على `dev` مباشرة
+```bash
+git add .
+git commit -m "وصف واضح للتعديل الذي قمت به"
+git push origin dev
+```
+
+#### ✅ لو شغال على `feature/*` (المفضل)
+```bash
+git add .
+git commit -m "وصف واضح للتعديل الذي قمت به"
+git push -u origin feature/<short-name>
+```
+ثم افتح **Pull Request** على GitHub من `feature/<short-name>` إلى `dev`.
 
 ---
-**Tadamon Shop Project - January 2026**
+
+## 👥 قواعد العمل الجماعي (Team Guidelines)
+
+- **حماية الـ Main:** ممنوع الرفع المباشر على فرع `main`. الدمج يتم فقط عبر مدير المشروع / Pull Requests.
+- **مجلد Generated:** ممنوع التعديل يدوياً على ملفات `lib/generated`.
+- **إضافة نصوص:** أي نص جديد يُضاف في ملفات `.arb` داخل `lib/l10n/` ثم تشغيل `flutter gen-l10n`.
+- **الالتزام بالطبقات:** يمنع كتابة أي منطق API داخل الـ UI؛ مكانه الصحيح هو الـ `Data Sources / Repositories`.
+- **حقن التبعيات:** أي كلاس جديد يجب تسجيله في `injection_container.dart` باستخدام **GetIt**.
+
+---
+
+**Tadamon Shop Project - Update: January 2026**
