@@ -36,7 +36,7 @@
 
 1. **تحميل المشروع (Clone):**
     ```bash
-    git clone [https://github.com/Ahmed-sherif11/tadamon_shop.git](https://github.com/Ahmed-sherif11/tadamon_shop.git)
+    git clone https://github.com/Ahmed-sherif11/tadamon_shop.git
     cd tadamon_shop
     ```
 
