@@ -7,7 +7,10 @@ class VerifyEmailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: const VerifyEmailBody(),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: VerifyEmailBody(),
+      ),
     );
   }
 }

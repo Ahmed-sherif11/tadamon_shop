@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-// استدعاء ملفات الـ Theme باستخدام مسار المشروع الصحيح
-import 'package:tadamon_shop/core/theme/app_styles.dart';
-import 'package:tadamon_shop/core/theme/app_colors.dart';
-// استدعاء الـ Widgets الموجودة في نفس المجلد
 import 'otp_fields_item.dart';
-import 'custom_verification_button.dart';
 
 class VerifyEmailBody extends StatelessWidget {
   const VerifyEmailBody({super.key});
@@ -13,85 +8,109 @@ class VerifyEmailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // الخلفية المتدرجة
+        // 1. الخلفية المتدرجة اللي فوق
         Container(
           height: MediaQuery.of(context).size.height * 0.4,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFFC8E6C9).withOpacity(0.5),
+                Color(0xFFE8F5E9), // أخضر فاتح جداً
                 Colors.white,
               ],
             ),
           ),
         ),
-        SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                const SizedBox(height: 100),
-                // الكارت الأبيض المحتوي على العناصر
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+        // 2. محتوى الصفحة
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 100), // مسافة من فوق
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // السهم اللي في الجنب
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.arrow_forward, color: Colors.black),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'تحقق من بريدك\nالإلكتروني',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2DB361),
+                        height: 1.2,
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.arrow_forward_ios, size: 18),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "تحقق من بريدك الإلكتروني",
-                        // تصحيح: AppStyles (بالـ s) و textStyle20
-                        style: AppStyles.textStyle20.copyWith(
-                          color: const Color(0xFF2D6A4F),
-                          fontWeight: FontWeight.bold,
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'أرسلنا رابط إعادة الضبط إلى ahmedsherif.com\nأدخل الرمز المكون من 5 أرقام المذكور في البريد الإلكتروني',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                    const SizedBox(height: 30),
+                    // مربعات الـ OTP
+                    const OtpFieldsItem(),
+                    const SizedBox(height: 30),
+                    // زرار التحقق
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2DB361),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'التحقق من الرمز',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        "أرسلنا رابط إعادة الضبط إلى ahmedsherif.com\nأدخل الرمز المكون من 5 أرقام المذكور في البريد الإلكتروني",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.grey, height: 1.5, fontSize: 13),
-                      ),
-                      const SizedBox(height: 35),
-                      // تصحيح: حذف كلمة const من هنا لأن الـ OTP يحتوي على TextField
-                      OtpFieldsItem(),
-                      const SizedBox(height: 35),
-                      // زرار التحقق المخصص
-                      CustomVerificationButton(
-                        onPressed: () {
-                          // أضف هنا كود الانتقال للصفحة التالية
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        "لم يصلك البريد الإلكتروني بعد؟ إعادة إرسال الرمز",
-                        style: TextStyle(
-                            color: Color(0xFF2D6A4F),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    // إعادة إرسال الرمز
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("لم يصلك البريد الإلكتروني بعد؟ ",
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Text(
+                            "إعادة إرسال الرمز",
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF2DB361),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
