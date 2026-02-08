@@ -45,10 +45,17 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
 
+
+  
+  # مكتبات اللغات اللي إحنا محتاجينها
+  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+
 
 # --- إعدادات فلاتر ---
 flutter:
@@ -57,7 +64,7 @@ flutter:
   # --- تفعيل المجلدات ---
   assets:
     - assets/images/
-    - assets/icons/
+    
     - assets/fonts/
 
   # --- إعداد الخط العربي (Cairo) ---
