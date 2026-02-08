@@ -1,0 +1,45 @@
+name: tadamon_app
+description: A new Flutter project for Tadamon.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+ddependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  shimmer: ^3.0.0
+  cupertino_icons: ^1.0.2
+  flutter_application_1: ^0.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/images/logo.png
+    - assets/images/facebook.png
+    - assets/images/google.png
+  fonts:
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal/Tajawal-Bold.ttf
+          weight: 700
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_gen: ^5.12.0
+  flutter_localizations:
+    sdk: flutter
+
+  shimmer: ^3.0.0
