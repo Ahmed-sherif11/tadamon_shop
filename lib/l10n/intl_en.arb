@@ -1,1 +1,41 @@
-{}
+{
+  "aboutApp": "About App",
+  "ourStory": "Our Story and Mission",
+  "ourStoryContent": "We believe that solidarity is not just a word, but an action that makes a difference. We launched this store in support of the people of Gaza, to provide a safe and reliable platform to help provide donations and purchase products whose proceeds go directly to serve the needy and affected.",
+  "ourVision": "Our Vision and Values",
+  "ourVisionContent": "We aspire to be the first platform for solidarity with the people of Gaza, by providing a humanitarian experience that effectively contributes to supporting families, the wounded, and the affected, with a commitment to transparency, honesty, humanity, and social responsibility.",
+  "legalInfo": "Legal Information",
+  "termsOfUse": "Terms of Use",
+  "privacyPolicy": "Privacy Policy",
+  "contactUs": "Contact Us",
+
+  "donations": "Donations",
+  "donationNumbers": "Contact & Donation Numbers",
+  "donationNumbersDesc": "Contact charitable organizations directly through the unified numbers for donation or inquiry",
+  "alShifaMedical": "Al-Shifa Medical Association",
+  "medicalCases": "For Medical Cases",
+  "ilmNoorFoundation": "Ilm Noor Foundation",
+  "educationProjects": "For Educational Projects",
+  "ewaCharity": "Ewa Charity Association",
+  "supportingFamilies": "To Support Needy Families",
+  "orphanCare": "Orphan Care Association",
+  "orphanSponsorship": "For Orphan Sponsorship & Care",
+
+  "notifications": "Notifications",
+  "special_offer_title": "Special Offer to Support Them",
+  "special_offer_desc": "20% discount on handmade embroidery products; every piece tells a story of resilience and heritage",
+  "weekend_discount_title": "Weekend Discounts",
+  "weekend_discount_desc": "Benefit from discounts up to 30% on Nabulsi soap and thyme products",
+  "free_shipping_title": "Free Shipping Offer",
+  "free_shipping_desc": "Get free shipping on all orders over 200 SAR; support our national products",
+
+  "smartAssistant": "Smart Assistant",
+  "activeStatus": "Active",
+  "botWelcomeMessage": "Hello! I am your smart assistant. How can I help you today?",
+  "userOrderTrack": "Hi! I would like to track my last order",
+  "botOrderResponse": "Sure! Could you please provide me with the order number?",
+  "typeMessageHint": "Type a message...",
+  "today": "Today",
+  "am": "AM",
+  "pm": "PM"
+}
