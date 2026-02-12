@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tadamon_app/l10n/app_localizations.dart';
 import 'success_screen.dart';
 
@@ -22,12 +23,54 @@ class _RegisterState extends State<RegisterScreen> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _confirmPassController = TextEditingController();
 
+  bool _isPassObscure = true;
+  bool _isConfirmPassObscure = true;
+
   String _selectedCountryCode = "+20";
   final List<Map<String, String>> _countries = [
     {"code": "+20", "flag": "🇪🇬"},
     {"code": "+966", "flag": "🇸🇦"},
     {"code": "+971", "flag": "🇦🇪"},
   ];
+
+  // دالة التحقق الذكية المحدثة
+  bool _isPhoneNumberValid() {
+    String phone = _phoneController.text;
+    if (phone.isEmpty) return false;
+
+    if (_selectedCountryCode == "+20") {
+      // لمفتاح مصر: يجب أن يكون 11 رقم ويبدأ بـ 0 (مثل 010, 011, 012, 015)
+      return phone.length == 11 && phone.startsWith('0');
+    } else if (_selectedCountryCode == "+966" ||
+        _selectedCountryCode == "+971") {
+      // للسعودية والإمارات: غالباً 9 أرقام بدون الصفر الدولي
+      return phone.length == 9;
+    }
+    return phone.length >= 8;
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: primaryColor),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDateController.text =
+            "${picked.year}-${picked.month}-${picked.day}";
+      });
+    }
+  }
 
   void _handleRegister(AppLocalizations l) {
     if (_firstNameController.text.isEmpty ||
@@ -37,27 +80,43 @@ class _RegisterState extends State<RegisterScreen> {
         _phoneController.text.isEmpty ||
         _passController.text.isEmpty ||
         _confirmPassController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l.fill_err ?? 'Please fill all fields',
-              style: const TextStyle(fontFamily: 'Tajawal')),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar(l.fill_err ?? 'يرجى ملء جميع الحقول', Colors.red);
+    }
+    // تفعيل التحقق الذكي هنا
+    else if (!_isPhoneNumberValid()) {
+      String errorMsg = isAr(context)
+          ? "رقم الهاتف غير صحيح (يجب أن يكون 11 رقم لمصر ويبدأ بـ 0)"
+          : "Invalid number (Must be 11 digits starting with 0 for Egypt)";
+      _showSnackBar(errorMsg, Colors.orange);
+    } else if (_passController.text != _confirmPassController.text) {
+      _showSnackBar(
+          isAr(context) ? "كلمات المرور غير متطابقة" : "Passwords do not match",
+          Colors.orange);
     } else {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const SuccessScreen()));
     }
   }
 
+  void _showSnackBar(String message, Color bgColor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontFamily: 'Tajawal')),
+        backgroundColor: bgColor,
+      ),
+    );
+  }
+
+  bool isAr(BuildContext context) =>
+      Localizations.localeOf(context).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
-    // 2. استدعاء المترجم
     var l = AppLocalizations.of(context)!;
-    bool isAr = Localizations.localeOf(context).languageCode == 'ar';
+    bool currentIsAr = isAr(context);
 
     return Directionality(
-      textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: currentIsAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         body: Container(
           width: double.infinity,
@@ -82,8 +141,7 @@ class _RegisterState extends State<RegisterScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                            color: const Color.fromARGB(255, 18, 18, 18)
-                                .withOpacity(0.1),
+                            color: Colors.black.withOpacity(0.1),
                             blurRadius: 25,
                             offset: const Offset(0, 10)),
                       ],
@@ -92,11 +150,12 @@ class _RegisterState extends State<RegisterScreen> {
                     child: Column(
                       children: [
                         Align(
-                          alignment:
-                              isAr ? Alignment.topRight : Alignment.topLeft,
+                          alignment: currentIsAr
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
                           child: IconButton(
                             icon: Icon(
-                                isAr
+                                currentIsAr
                                     ? Icons.arrow_forward_ios
                                     : Icons.arrow_back_ios,
                                 color: primaryColor,
@@ -105,27 +164,26 @@ class _RegisterState extends State<RegisterScreen> {
                           ),
                         ),
                         Text(
-                          l.reg_ti, // عنوان "إنشاء حساب"
+                          l.reg_ti,
                           style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Tajawal',
-                            color: Color.fromARGB(255, 16, 138, 44),
-                          ),
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Tajawal',
+                              color: Color.fromARGB(255, 16, 138, 44)),
                         ),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(l.already, // "لديك حساب بالفعل؟"
+                            Text("${l.already} ",
                                 style: const TextStyle(
                                     fontFamily: 'Tajawal',
                                     fontSize: 13,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold)),
+                                    color: Colors.grey)),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Text(isAr ? "تسجيل الدخول" : "Login",
+                              child: Text(
+                                  currentIsAr ? "تسجيل الدخول" : "Login",
                                   style: TextStyle(
                                       fontFamily: 'Tajawal',
                                       fontSize: 13,
@@ -139,22 +197,35 @@ class _RegisterState extends State<RegisterScreen> {
                           children: [
                             Expanded(
                                 child: _buildField(
-                                    l.fname, _firstNameController, isAr)),
+                                    l.fname, _firstNameController, currentIsAr,
+                                    isOnlyAlpha: true)),
                             const SizedBox(width: 12),
                             Expanded(
                                 child: _buildField(
-                                    l.lname, _lastNameController, isAr)),
+                                    l.lname, _lastNameController, currentIsAr,
+                                    isOnlyAlpha: true)),
                           ],
                         ),
-                        _buildField(l.em, _emailController, isAr,
+                        _buildField(l.em, _emailController, currentIsAr,
                             icon: Icons.email_outlined),
-                        _buildField(l.birth, _birthDateController, isAr,
-                            icon: Icons.calendar_month_outlined),
-                        _buildField(l.ph, _phoneController, isAr,
+                        _buildField(l.birth, _birthDateController, currentIsAr,
+                            icon: Icons.calendar_month_outlined,
+                            isReadOnly: true,
+                            onTap: () => _selectDate(context)),
+                        _buildField(l.ph, _phoneController, currentIsAr,
                             isPhone: true),
-                        _buildField(l.ps, _passController, isAr, isPass: true),
-                        _buildField(l.confirm, _confirmPassController, isAr,
-                            isPass: true),
+                        _buildField(l.ps, _passController, currentIsAr,
+                            isPass: true,
+                            isObscure: _isPassObscure,
+                            onToggleObscure: () => setState(
+                                () => _isPassObscure = !_isPassObscure)),
+                        _buildField(
+                            l.confirm, _confirmPassController, currentIsAr,
+                            isPass: true,
+                            isObscure: _isConfirmPassObscure,
+                            onToggleObscure: () => setState(() =>
+                                _isConfirmPassObscure =
+                                    !_isConfirmPassObscure)),
                         const SizedBox(height: 25),
                         _buildRegisterButton(l.btn_reg, l),
                       ],
@@ -170,7 +241,14 @@ class _RegisterState extends State<RegisterScreen> {
   }
 
   Widget _buildField(String label, TextEditingController controller, bool isAr,
-      {bool isPass = false, bool isPhone = false, IconData? icon}) {
+      {bool isPass = false,
+      bool isPhone = false,
+      bool isOnlyAlpha = false,
+      bool isReadOnly = false,
+      bool? isObscure,
+      VoidCallback? onToggleObscure,
+      IconData? icon,
+      VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -185,14 +263,24 @@ class _RegisterState extends State<RegisterScreen> {
           const SizedBox(height: 6),
           TextField(
             controller: controller,
-            obscureText: isPass,
+            obscureText: isObscure ?? false,
+            readOnly: isReadOnly,
+            onTap: onTap,
+            inputFormatters: [
+              if (isOnlyAlpha)
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zء-ي\s]')),
+              if (isPhone) FilteringTextInputFormatter.digitsOnly,
+              if (isPhone)
+                LengthLimitingTextInputFormatter(
+                    11), // تم التعديل لـ 11 رقم لمصر
+            ],
             keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
             textAlign: isAr ? TextAlign.right : TextAlign.left,
             style: const TextStyle(
                 fontFamily: 'Tajawal',
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 20, 19, 19)),
+                color: Colors.black),
             decoration: InputDecoration(
               filled: true,
               fillColor: const Color(0xFFF9F9F9),
@@ -201,6 +289,13 @@ class _RegisterState extends State<RegisterScreen> {
                   : (icon != null
                       ? Icon(icon, color: primaryColor, size: 20)
                       : null),
+              suffixIcon: isPass
+                  ? IconButton(
+                      icon: Icon(
+                          isObscure! ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey),
+                      onPressed: onToggleObscure)
+                  : null,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
               enabledBorder: OutlineInputBorder(
@@ -218,29 +313,30 @@ class _RegisterState extends State<RegisterScreen> {
 
   Widget _buildCountryPicker(bool isAr) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      margin: EdgeInsets.only(left: isAr ? 8 : 0, right: isAr ? 0 : 8),
-      decoration: BoxDecoration(
-          border: Border(
-              left: isAr
-                  ? BorderSide(color: Colors.grey.shade300)
-                  : BorderSide.none,
-              right: !isAr
-                  ? BorderSide(color: Colors.grey.shade300)
-                  : BorderSide.none)),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _selectedCountryCode,
           items: _countries
               .map((c) => DropdownMenuItem(
                   value: c['code'],
-                  child: Row(children: [
-                    Text(c['flag']!),
-                    const SizedBox(width: 6),
-                    Text(c['code']!, style: const TextStyle(fontSize: 12))
-                  ])))
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(c['flag']!),
+                      const SizedBox(width: 4),
+                      Text(c['code']!,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black)),
+                    ],
+                  )))
               .toList(),
-          onChanged: (v) => setState(() => _selectedCountryCode = v!),
+          onChanged: (v) => setState(() {
+            _selectedCountryCode = v!;
+            _phoneController.clear();
+          }),
         ),
       ),
     );

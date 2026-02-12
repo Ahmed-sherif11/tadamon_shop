@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:tadamon_app/l10n/app_localizations.dart';
+// تأكدي من استيراد صفحة تسجيل الدخول هنا
+// import 'login_screen.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
@@ -8,9 +10,7 @@ class SuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2. (استدعاء المترجم )
     var l = AppLocalizations.of(context)!;
-    // 3. تحديد اتجاه الصفحة بناءً على اللغة
     bool isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Directionality(
@@ -36,7 +36,6 @@ class SuccessScreen extends StatelessWidget {
                 child: child)),
       );
 
-  // تم تغيير نوع l هنا ليكون AppLocalizations
   Widget _buildCard(BuildContext context, AppLocalizations l) => Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -50,7 +49,6 @@ class SuccessScreen extends StatelessWidget {
           const SizedBox(height: 20),
           _icon(),
           const SizedBox(height: 35),
-          // 4. استخدام نص العنوان
           Text(l.success_ti,
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -59,7 +57,6 @@ class SuccessScreen extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                   color: Color(0xFF137D3A))),
           const SizedBox(height: 15),
-          // 5. استخدام النص الفرعي المترجم
           Text(l.success_sub,
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -82,17 +79,19 @@ class SuccessScreen extends StatelessWidget {
         child: const Icon(Icons.check, color: primaryColor, size: 55),
       );
 
-  // تم تغيير نوع l هنا أيضاً
   Widget _btn(BuildContext context, AppLocalizations l) => SizedBox(
         width: double.infinity,
         height: 52,
         child: ElevatedButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // التعديل هنا: العودة لأول صفحة في التطبيق (التي هي غالباً تسجيل الدخول)
+            // وإزالة كل الصفحات التي فوقها
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          },
           style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8))),
-          // 6. استخدام نص الزر المترجم
           child: Text(l.back_login,
               style: const TextStyle(
                   fontFamily: 'Tajawal',
