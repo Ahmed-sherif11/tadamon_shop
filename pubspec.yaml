@@ -39,6 +39,7 @@ dependencies:
 
   # --- رسائل التنبيه (Toasts) - (جديد ومهم للمتاجر) ---
   fluttertoast: ^8.2.10
+  share_plus: ^10.1.0
 
   # --- الترجمة واللغات (Localization) ---
   flutter_localizations:
