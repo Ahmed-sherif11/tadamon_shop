@@ -1,10 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-// 1. استدعاء المترجم الجديد
-import 'package:tadamon_app/forget_password_screen.dart';
+import 'package:tadamon_app/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:tadamon_app/l10n/app_localizations.dart';
-import 'package:tadamon_app/register_screen.dart';
+import 'package:tadamon_app/features/auth/presentation/pages/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,19 +13,92 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginScreen> {
+  // إضافة Controllers للتحكم في الحقول وقراءة النصوص منها
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+
   bool _isRem = false, _obscure = true;
+  bool _isLoading = false;
+
   Color primary = const Color(0xFF3FB56C),
       gray = const Color(0xFF777777),
       bgColor = const Color(0xFFF0F8FF);
 
+  // دالة للتحقق من صيغة البريد الإلكتروني
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  // تحديث دالة الـ Future مع إضافة شروط التحقق
+  Future<void> _handleLogin(AppLocalizations l) async {
+    String email = _emailController.text.trim();
+    String password = _passController.text.trim();
+
+    // 1. التحقق من الحقول الفارغة
+    if (email.isEmpty || password.isEmpty) {
+      _showSnackBar(
+          isAr(context) ? "يرجى ملء جميع الحقول" : "Please fill all fields",
+          Colors.red);
+      return;
+    }
+
+    // 2. التحقق من صيغة الإيميل
+    if (!_isValidEmail(email)) {
+      _showSnackBar(
+          isAr(context)
+              ? "صيغة البريد الإلكتروني غير صحيحة"
+              : "Invalid email format",
+          Colors.orange);
+      return;
+    }
+
+    // 3. التحقق من طول كلمة المرور (مثلاً لا تقل عن 6 خانات)
+    if (password.length < 6) {
+      _showSnackBar(
+          isAr(context) ? "كلمة المرور ضعيفة جداً" : "Password is too short",
+          Colors.orange);
+      return;
+    }
+
+    // إذا اجتازت البيانات كل الشروط، نبدأ التحميل
+    setState(() => _isLoading = true);
+
+    try {
+      // محاكاة الاتصال بالسيرفر
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (mounted) {
+        _showSnackBar(
+            isAr(context) ? "تم تسجيل الدخول بنجاح" : "Login Successful",
+            primary);
+        // Navigator.pushReplacement(...)
+      }
+    } catch (e) {
+      _showSnackBar(
+          isAr(context) ? "فشل الاتصال" : "Connection failed", Colors.red);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _showSnackBar(String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(msg, style: const TextStyle(fontFamily: 'Tajawal')),
+          backgroundColor: color),
+    );
+  }
+
+  bool isAr(BuildContext context) =>
+      Localizations.localeOf(context).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
     var l = AppLocalizations.of(context)!;
-    // تحديد اللغة لمعرفة اتجاه النصوص
-    bool isAr = Localizations.localeOf(context).languageCode == 'ar';
+    bool currentIsAr = isAr(context);
 
     return Directionality(
-      textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: currentIsAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: bgColor,
         body: SingleChildScrollView(
@@ -50,10 +122,13 @@ class _LoginState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Tajawal')),
                 const SizedBox(height: 16),
-                _field(Icons.email_outlined, l.em, false, isAr),
-                _field(Icons.lock_outline, l.ps, true, isAr),
+                // تمرير الـ Controllers للحقول
+                _field(Icons.email_outlined, l.em, false, currentIsAr,
+                    _emailController),
+                _field(Icons.lock_outline, l.ps, true, currentIsAr,
+                    _passController),
                 _remRow(l),
-                _btn(l.btn, primary),
+                _btn(l.btn, primary, l),
                 _div(l),
                 _social(l.go, "assets/images/google.png"),
                 const SizedBox(height: 8),
@@ -66,29 +141,32 @@ class _LoginState extends State<LoginScreen> {
     );
   }
 
-  // إضافة bool isAr لتحديد محاذاة النص داخل الحقل
-  Widget _field(IconData i, String h, bool p, bool isAr) => Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: TextField(
-          obscureText: p ? _obscure : false,
-          textAlign: isAr ? TextAlign.right : TextAlign.left,
-          style: const TextStyle(
-              fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
-          decoration: InputDecoration(
-            prefixIcon: Icon(i, color: const Color(0xFF444444)),
-            suffixIcon: p
-                ? IconButton(
-                    icon: Icon(
-                        _obscure ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () => setState(() => _obscure = !_obscure))
-                : null,
-            hintText: h,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide.none),
-          )));
+  // تحديث الـ Widget ليقبل Controller
+  Widget _field(IconData i, String h, bool p, bool isAr,
+          TextEditingController controller) =>
+      Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: TextField(
+              controller: controller,
+              obscureText: p ? _obscure : false,
+              textAlign: isAr ? TextAlign.right : TextAlign.left,
+              style: const TextStyle(
+                  fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                prefixIcon: Icon(i, color: const Color(0xFF444444)),
+                suffixIcon: p
+                    ? IconButton(
+                        icon: Icon(
+                            _obscure ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setState(() => _obscure = !_obscure))
+                    : null,
+                hintText: h,
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none),
+              )));
 
   Widget _remRow(AppLocalizations l) =>
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -116,22 +194,28 @@ class _LoginState extends State<LoginScreen> {
                     fontFamily: 'Tajawal'))),
       ]);
 
-  Widget _btn(String t, Color c) => SizedBox(
+  Widget _btn(String t, Color c, AppLocalizations l) => SizedBox(
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-          onPressed: () {},
+          onPressed: _isLoading ? null : () => _handleLogin(l),
           style: ElevatedButton.styleFrom(
               backgroundColor: c,
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15))),
-          child: Text(t,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Tajawal'))));
+          child: _isLoading
+              ? const SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(
+                      color: Colors.white, strokeWidth: 2))
+              : Text(t,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Tajawal'))));
 
   Widget _div(AppLocalizations l) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 15),

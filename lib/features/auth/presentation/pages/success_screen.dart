@@ -1,12 +1,34 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:tadamon_app/l10n/app_localizations.dart';
-// تأكدي من استيراد صفحة تسجيل الدخول هنا
-// import 'login_screen.dart';
 
-class SuccessScreen extends StatelessWidget {
+class SuccessScreen extends StatefulWidget {
   const SuccessScreen({super.key});
+
+  @override
+  State<SuccessScreen> createState() => _SuccessScreenState();
+}
+
+class _SuccessScreenState extends State<SuccessScreen> {
   static const Color primaryColor = Color(0xFF3FB56C);
+
+  @override
+  void initState() {
+    super.initState();
+    // تطبيق الفيوتشر للانتقال التلقائي
+    _startAutoNavigation();
+  }
+
+  // دالة الفيوتشر التي طلبها الليدر
+  Future<void> _startAutoNavigation() async {
+    // الانتظار لمدة 4 ثوانٍ ليعيش المستخدم لحظة النجاح
+    await Future.delayed(const Duration(seconds: 4));
+
+    if (mounted) {
+      // العودة لصفحة البداية تلقائياً
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +87,8 @@ class SuccessScreen extends StatelessWidget {
                   color: Colors.grey,
                   fontWeight: FontWeight.w600)),
           const SizedBox(height: 45),
-          _btn(context, l),
+          _btn(context,
+              l), // الزر يبقى كخيار إضافي إذا أراد المستخدم الضغط فوراً
           const SizedBox(height: 20),
         ]),
       );
@@ -84,8 +107,6 @@ class SuccessScreen extends StatelessWidget {
         height: 52,
         child: ElevatedButton(
           onPressed: () {
-            // التعديل هنا: العودة لأول صفحة في التطبيق (التي هي غالباً تسجيل الدخول)
-            // وإزالة كل الصفحات التي فوقها
             Navigator.of(context).popUntil((route) => route.isFirst);
           },
           style: ElevatedButton.styleFrom(

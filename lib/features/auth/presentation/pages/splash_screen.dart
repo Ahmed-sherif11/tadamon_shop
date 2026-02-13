@@ -22,13 +22,21 @@ class _SplashScreenState extends State<SplashScreen>
         AnimationController(vsync: this, duration: const Duration(seconds: 2))
           ..repeat();
 
-    // الانتظار لمدة 5 ثوانٍ ثم الانتقال لصفحة تسجيل الدخول
-    Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginScreen()));
-      }
-    });
+    // استدعاء دالة الانتقال المنفصلة التي تعتمد على الفيوتشر
+    _navigateToNextScreen();
+  }
+
+  // هذه الدالة هي "الفيوتشر" الذي طلبه الليدر
+  // فصلناها هنا لكي يسهل عليكِ مستقبلاً إضافة "تحقق من الدخول" داخلها
+  Future<void> _navigateToNextScreen() async {
+    // 1. الانتظار لمدة 5 ثوانٍ (Future)
+    await Future.delayed(const Duration(seconds: 5));
+
+    // 2. التحقق من أن الصفحة لا تزال موجودة قبل الانتقال
+    if (mounted) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (c) => const LoginScreen()));
+    }
   }
 
   @override
@@ -39,14 +47,13 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // 2. استدعاء المترجم
     var l = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
       body: Center(
         child: Stack(alignment: Alignment.center, children: [
-          _buildLogoAndText(l), // تمرير المترجم الجديد للدالة
+          _buildLogoAndText(l),
           _buildShimmerLayer(),
         ]),
       ),
@@ -58,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           Image.asset('assets/images/logo.png',
               width: 300, height: 300, fit: BoxFit.contain),
-          SizedBox(height: 0),
+          const SizedBox(height: 0),
           Text(l.app_name,
               style: const TextStyle(
                   fontFamily: 'Tajawal',

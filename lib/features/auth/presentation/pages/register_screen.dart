@@ -25,6 +25,7 @@ class _RegisterState extends State<RegisterScreen> {
 
   bool _isPassObscure = true;
   bool _isConfirmPassObscure = true;
+  bool _isLoading = false;
 
   String _selectedCountryCode = "+20";
   final List<Map<String, String>> _countries = [
@@ -33,17 +34,19 @@ class _RegisterState extends State<RegisterScreen> {
     {"code": "+971", "flag": "🇦🇪"},
   ];
 
-  // دالة التحقق الذكية المحدثة
+  // التحقق من صحة البريد الإلكتروني برمجياً
+  bool _isEmailValid(String email) {
+    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    return emailRegExp.hasMatch(email);
+  }
+
   bool _isPhoneNumberValid() {
     String phone = _phoneController.text;
     if (phone.isEmpty) return false;
-
     if (_selectedCountryCode == "+20") {
-      // لمفتاح مصر: يجب أن يكون 11 رقم ويبدأ بـ 0 (مثل 010, 011, 012, 015)
       return phone.length == 11 && phone.startsWith('0');
     } else if (_selectedCountryCode == "+966" ||
         _selectedCountryCode == "+971") {
-      // للسعودية والإمارات: غالباً 9 أرقام بدون الصفر الدولي
       return phone.length == 9;
     }
     return phone.length >= 8;
@@ -72,7 +75,8 @@ class _RegisterState extends State<RegisterScreen> {
     }
   }
 
-  void _handleRegister(AppLocalizations l) {
+  Future<void> _handleRegister(AppLocalizations l) async {
+    // 1. التحقق من الحقول الفارغة
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
@@ -81,20 +85,49 @@ class _RegisterState extends State<RegisterScreen> {
         _passController.text.isEmpty ||
         _confirmPassController.text.isEmpty) {
       _showSnackBar(l.fill_err ?? 'يرجى ملء جميع الحقول', Colors.red);
+      return;
     }
-    // تفعيل التحقق الذكي هنا
-    else if (!_isPhoneNumberValid()) {
-      String errorMsg = isAr(context)
-          ? "رقم الهاتف غير صحيح (يجب أن يكون 11 رقم لمصر ويبدأ بـ 0)"
-          : "Invalid number (Must be 11 digits starting with 0 for Egypt)";
-      _showSnackBar(errorMsg, Colors.orange);
-    } else if (_passController.text != _confirmPassController.text) {
+
+    // 2. التحقق من صيغة البريد الإلكتروني (المنطق الذي طلبه الليدر)
+    if (!_isEmailValid(_emailController.text)) {
+      _showSnackBar(
+          isAr(context)
+              ? "صيغة البريد الإلكتروني غير صحيحة"
+              : "Invalid email format",
+          Colors.orange);
+      return;
+    }
+
+    // 3. التحقق من رقم الهاتف
+    if (!_isPhoneNumberValid()) {
+      _showSnackBar(
+          isAr(context) ? "رقم الهاتف غير صحيح" : "Invalid phone number",
+          Colors.orange);
+      return;
+    }
+
+    // 4. تطابق كلمة المرور
+    if (_passController.text != _confirmPassController.text) {
       _showSnackBar(
           isAr(context) ? "كلمات المرور غير متطابقة" : "Passwords do not match",
           Colors.orange);
-    } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const SuccessScreen()));
+      return;
+    }
+
+    // بدء عملية الـ Future
+    setState(() => _isLoading = true);
+
+    try {
+      await Future.delayed(const Duration(seconds: 2)); // محاكاة طلب السيرفر
+      if (mounted) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const SuccessScreen()));
+      }
+    } catch (e) {
+      _showSnackBar(
+          isAr(context) ? "حدث خطأ في الشبكة" : "Network error", Colors.red);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -135,10 +168,9 @@ class _RegisterState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   Container(
-                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -163,36 +195,31 @@ class _RegisterState extends State<RegisterScreen> {
                             onPressed: () => Navigator.pop(context),
                           ),
                         ),
-                        Text(
-                          l.reg_ti,
-                          style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Tajawal',
-                              color: Color.fromARGB(255, 16, 138, 44)),
-                        ),
+                        Text(l.reg_ti,
+                            style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: 'Tajawal',
+                                color: Color(0xFF108A2C))),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text("${l.already} ",
                                 style: const TextStyle(
-                                    fontFamily: 'Tajawal',
-                                    fontSize: 13,
-                                    color: Colors.grey)),
+                                    fontFamily: 'Tajawal', color: Colors.grey)),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
                               child: Text(
                                   currentIsAr ? "تسجيل الدخول" : "Login",
                                   style: TextStyle(
                                       fontFamily: 'Tajawal',
-                                      fontSize: 13,
                                       color: primaryColor,
                                       fontWeight: FontWeight.w900)),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 30),
                         Row(
                           children: [
                             Expanded(
@@ -250,63 +277,53 @@ class _RegisterState extends State<RegisterScreen> {
       IconData? icon,
       VoidCallback? onTap}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label,
-              style: const TextStyle(
-                  fontFamily: 'Tajawal',
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
-                  color: Colors.grey)),
-          const SizedBox(height: 6),
-          TextField(
-            controller: controller,
-            obscureText: isObscure ?? false,
-            readOnly: isReadOnly,
-            onTap: onTap,
-            inputFormatters: [
-              if (isOnlyAlpha)
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zء-ي\s]')),
-              if (isPhone) FilteringTextInputFormatter.digitsOnly,
-              if (isPhone)
-                LengthLimitingTextInputFormatter(
-                    11), // تم التعديل لـ 11 رقم لمصر
-            ],
-            keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
-            textAlign: isAr ? TextAlign.right : TextAlign.left,
-            style: const TextStyle(
-                fontFamily: 'Tajawal',
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.black),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color(0xFFF9F9F9),
-              prefixIcon: isPhone
-                  ? _buildCountryPicker(isAr)
-                  : (icon != null
-                      ? Icon(icon, color: primaryColor, size: 20)
-                      : null),
-              suffixIcon: isPass
-                  ? IconButton(
-                      icon: Icon(
-                          isObscure! ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.grey),
-                      onPressed: onToggleObscure)
-                  : null,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade200)),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: primaryColor, width: 1.5)),
-            ),
-          ),
+      padding: const EdgeInsets.only(bottom: 20),
+      child: TextField(
+        controller: controller,
+        obscureText: isObscure ?? false,
+        readOnly: isReadOnly,
+        onTap: onTap,
+        inputFormatters: [
+          if (isOnlyAlpha)
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zء-ي\s]')),
+          if (isPhone) FilteringTextInputFormatter.digitsOnly,
+          if (isPhone) LengthLimitingTextInputFormatter(11),
         ],
+        keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
+        textAlign: isAr ? TextAlign.right : TextAlign.left,
+        decoration: InputDecoration(
+          // استخدام labelText لتحقيق التأثير الاحترافي (حركة النص للأعلى)
+          labelText: label,
+          labelStyle: const TextStyle(
+              fontFamily: 'Tajawal',
+              fontWeight: FontWeight.w600,
+              color: Colors.grey),
+          floatingLabelStyle:
+              TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+
+          filled: true,
+          fillColor: const Color(0xFFF9F9F9),
+          prefixIcon: isPhone
+              ? _buildCountryPicker(isAr)
+              : (icon != null
+                  ? Icon(icon, color: primaryColor, size: 20)
+                  : null),
+          suffixIcon: isPass
+              ? IconButton(
+                  icon: Icon(
+                      isObscure! ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey),
+                  onPressed: onToggleObscure)
+              : null,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade200)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: primaryColor, width: 1.5)),
+        ),
       ),
     );
   }
@@ -320,18 +337,13 @@ class _RegisterState extends State<RegisterScreen> {
           items: _countries
               .map((c) => DropdownMenuItem(
                   value: c['code'],
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(c['flag']!),
-                      const SizedBox(width: 4),
-                      Text(c['code']!,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black)),
-                    ],
-                  )))
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Text(c['flag']!),
+                    const SizedBox(width: 4),
+                    Text(c['code']!,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold))
+                  ])))
               .toList(),
           onChanged: (v) => setState(() {
             _selectedCountryCode = v!;
@@ -345,20 +357,26 @@ class _RegisterState extends State<RegisterScreen> {
   Widget _buildRegisterButton(String title, AppLocalizations l) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: 55,
       child: ElevatedButton(
-        onPressed: () => _handleRegister(l),
+        onPressed: _isLoading ? null : () => _handleRegister(l),
         style: ElevatedButton.styleFrom(
             backgroundColor: primaryColor,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 2),
-        child: Text(title,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Tajawal')),
+        child: _isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                    color: Colors.white, strokeWidth: 2.5))
+            : Text(title,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Tajawal')),
       ),
     );
   }
