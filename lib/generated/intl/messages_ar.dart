@@ -64,13 +64,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ourStory": MessageLookupByLibrary.simpleMessage("قصتنا ورسالتنا"),
     "ourStoryContent": MessageLookupByLibrary.simpleMessage(
-      "نحن نؤمن بأن التضامن ليس مجرد كلمة، بل فعل يُحدث فرقاً. أطلقنا هذا المتجر دعماً لأهل غزة، لنوفّر منصة آمنة وموثوقة تساعد في تقديم التبرعات وشراء منتجات يعود ريعها مباشرة لخدمة المحتاجين والمتضررين.",
+      "نحن نؤمن بأن التضامن ليس مجرد كلمة، بل فعل يُحدث فرقاً. أطلقنا هذا المتجر دعماً لأهل غزة، لنوفّر منصة آمنة وموثوقة تساعد في تقديم التبرعات وشراء منتجات يعود ريعها مباشرة لخدمة المحتاجين والمتضررين. بدأت رحلتنا بهدف نبيل؛ أن يكون كل شراء رسالة دعم، وكل مساهمة بصمة أمل.",
     ),
     "ourVision": MessageLookupByLibrary.simpleMessage("رؤيتنا وقيمنا"),
     "ourVisionContent": MessageLookupByLibrary.simpleMessage(
-      "نطمح لأن نكون المنصة الأولى للتضامن مع أهل غزة، من خلال تقديم تجربة إنسانية تُسهم بفعالية في دعم العائلات والجرحى والمتضررين، مع الالتزام بالشفافية والصدق والإنسانية.",
+      "نطمح لأن نكون المنصة الأولى للتضامن مع أهل غزة، من خلال تقديم تجربة إنسانية تُسهم بفعالية في دعم العائلات والجرحى والمتضررين، مع الالتزام بالشفافية والصدق والإنسانية والمسؤولية الاجتماعية. قيمنا ترتكز على: الموثوقية - التأثير الحقيقي - التعاون - الرحمة.",
     ),
     "pm": MessageLookupByLibrary.simpleMessage("مساءً"),
+    "privacyContent": MessageLookupByLibrary.simpleMessage(
+      "في \'تضامن\'، خصوصيتك هي أولويتنا. نحن نجمع فقط البيانات الضرورية لإتمام عمليات التبرع والشراء بأمان، ونلتزم بعدم مشاركة معلوماتك مع أي جهة خارجية، لضمان تجربة تبرع آمنة وموثوقة.",
+    ),
     "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
     "smartAssistant": MessageLookupByLibrary.simpleMessage("المساعد الذكي"),
     "special_offer_desc": MessageLookupByLibrary.simpleMessage(
@@ -81,6 +84,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "supportingFamilies": MessageLookupByLibrary.simpleMessage(
       "لدعم الاسر المحتاجة",
+    ),
+    "termsContent": MessageLookupByLibrary.simpleMessage(
+      "من خلال استخدامك لمتجر \'تضامن\'، فإنك توافق على المساهمة في دعم القضايا الإنسانية بكل شفافية. نلتزم بتوجيه عائدات المنتجات لدعم المتضررين، ويُحظر استخدام المنصة في أي أعمال تخالف أهدافنا التضامنية.",
     ),
     "termsOfUse": MessageLookupByLibrary.simpleMessage("شروط الاستخدام"),
     "today": MessageLookupByLibrary.simpleMessage("اليوم"),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tadamon_shop/features/notifications/data/models/notification_model.dart';
 import 'package:tadamon_shop/features/notifications/presentation/widgets/notification_items.dart';
+import 'package:tadamon_shop/features/About/presentation/views/about_view.dart';
 import '../../../../generated/l10n.dart';
 
 class NotificationsView extends StatelessWidget {
@@ -7,6 +9,24 @@ class NotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<NotificationModel> notificationsData = [
+      NotificationModel(
+        title: S.of(context).special_offer_title,
+        subtitle: S.of(context).special_offer_desc,
+        icon: Icons.block,
+      ),
+      NotificationModel(
+        title: S.of(context).weekend_discount_title,
+        subtitle: S.of(context).weekend_discount_desc,
+        icon: Icons.swipe_vertical,
+      ),
+      NotificationModel(
+        title: S.of(context).free_shipping_title,
+        subtitle: S.of(context).free_shipping_desc,
+        icon: Icons.touch_app_outlined,
+      ),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -31,7 +51,13 @@ class NotificationsView extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios,
                             size: 22, color: Colors.black),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AboutView()),
+                          );
+                        },
                       ),
                       Expanded(
                         child: Row(
@@ -58,33 +84,16 @@ class NotificationsView extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
-            // قائمة الإشعارات
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                children: [
-                  NotificationItem(
-                    title: S.of(context).special_offer_title,
-                    subtitle: S.of(context).special_offer_desc,
-                    icon: Icons.block,
-                  ),
-                  const SizedBox(height: 12),
-                  NotificationItem(
-                    title: S.of(context).weekend_discount_title,
-                    subtitle: S.of(context).weekend_discount_desc,
-                    icon: Icons.swipe_vertical,
-                  ),
-                  const SizedBox(height: 12),
-                  NotificationItem(
-                    title: S.of(context).free_shipping_title,
-                    subtitle: S.of(context).free_shipping_desc,
-                    icon: Icons.touch_app_outlined,
-                  ),
-                ],
+                itemCount: notificationsData.length,
+                itemBuilder: (context, index) {
+                  return NotificationItem(
+                      notification: notificationsData[index]);
+                },
               ),
             ),
           ],

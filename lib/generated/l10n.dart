@@ -69,10 +69,10 @@ class S {
     );
   }
 
-  /// `We believe that solidarity is not just a word, but an action that makes a difference. We launched this store in support of the people of Gaza, to provide a safe and reliable platform to help provide donations and purchase products whose proceeds go directly to serve the needy and affected.`
+  /// `We believe that solidarity is not just a word, but an action that makes a difference. We launched this store in support of the people of Gaza, to provide a safe and reliable platform to help provide donations and purchase products whose proceeds go directly to serve the needy and affected. Our journey began with a noble goal: that every purchase is a message of support, and every contribution is a footprint of hope.`
   String get ourStoryContent {
     return Intl.message(
-      'We believe that solidarity is not just a word, but an action that makes a difference. We launched this store in support of the people of Gaza, to provide a safe and reliable platform to help provide donations and purchase products whose proceeds go directly to serve the needy and affected.',
+      'We believe that solidarity is not just a word, but an action that makes a difference. We launched this store in support of the people of Gaza, to provide a safe and reliable platform to help provide donations and purchase products whose proceeds go directly to serve the needy and affected. Our journey began with a noble goal: that every purchase is a message of support, and every contribution is a footprint of hope.',
       name: 'ourStoryContent',
       desc: '',
       args: [],
@@ -89,10 +89,10 @@ class S {
     );
   }
 
-  /// `We aspire to be the first platform for solidarity with the people of Gaza, by providing a humanitarian experience that effectively contributes to supporting families, the wounded, and the affected, with a commitment to transparency, honesty, humanity, and social responsibility.`
+  /// `We aspire to be the first platform for solidarity with the people of Gaza, by providing a humanitarian experience that effectively contributes to supporting families, the wounded, and the affected, with a commitment to transparency, honesty, humanity, and social responsibility. Our values are based on: Reliability - Real Impact - Cooperation - Compassion.`
   String get ourVisionContent {
     return Intl.message(
-      'We aspire to be the first platform for solidarity with the people of Gaza, by providing a humanitarian experience that effectively contributes to supporting families, the wounded, and the affected, with a commitment to transparency, honesty, humanity, and social responsibility.',
+      'We aspire to be the first platform for solidarity with the people of Gaza, by providing a humanitarian experience that effectively contributes to supporting families, the wounded, and the affected, with a commitment to transparency, honesty, humanity, and social responsibility. Our values are based on: Reliability - Real Impact - Cooperation - Compassion.',
       name: 'ourVisionContent',
       desc: '',
       args: [],
@@ -127,6 +127,26 @@ class S {
   /// `Contact Us`
   String get contactUs {
     return Intl.message('Contact Us', name: 'contactUs', desc: '', args: []);
+  }
+
+  /// `By using the 'Tadamon' store, you agree to contribute to supporting humanitarian causes with full transparency. We are committed to directing product proceeds to support those affected, and it is prohibited to use the platform for any activities that contradict our solidarity goals.`
+  String get termsContent {
+    return Intl.message(
+      'By using the \'Tadamon\' store, you agree to contribute to supporting humanitarian causes with full transparency. We are committed to directing product proceeds to support those affected, and it is prohibited to use the platform for any activities that contradict our solidarity goals.',
+      name: 'termsContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At 'Tadamon', your privacy is our priority. We only collect necessary data to complete donation and purchase processes safely, and we are committed to not sharing your information with any third party, ensuring a safe and reliable donation experience.`
+  String get privacyContent {
+    return Intl.message(
+      'At \'Tadamon\', your privacy is our priority. We only collect necessary data to complete donation and purchase processes safely, and we are committed to not sharing your information with any third party, ensuring a safe and reliable donation experience.',
+      name: 'privacyContent',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Donations`

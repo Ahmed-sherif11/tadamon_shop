@@ -11,7 +11,11 @@ class ChatBubble extends StatelessWidget {
     bool isUser = message.isUser;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.only(
+        bottom: 20,
+        left: isUser ? 0.0 : 60.0,
+        right: isUser ? 52.0 : 0.0,
+      ),
       child: Row(
         mainAxisAlignment:
             isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -19,37 +23,40 @@ class ChatBubble extends StatelessWidget {
         children: [
           if (!isUser) ...[
             const CircleAvatar(
-              radius: 16,
+              radius: 14,
               backgroundImage: AssetImage('assets/images/pr1.jpg'),
             ),
             const SizedBox(width: 8),
           ],
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: isUser ? Colors.grey[200] : const Color(0xFF2EAB4F),
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(20),
-                  topRight: const Radius.circular(20),
-                  bottomLeft: isUser ? const Radius.circular(20) : Radius.zero,
-                  bottomRight: isUser ? Radius.zero : const Radius.circular(20),
-                ),
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: isUser ? 223 : 227,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isUser ? const Color(0xffF2F4F6) : const Color(0xFF2EAB4F),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(16),
+                topRight: const Radius.circular(16),
+                bottomLeft: Radius.circular(isUser ? 16 : 0),
+                bottomRight: Radius.circular(isUser ? 0 : 16),
               ),
-              child: Text(
-                message.text,
-                style: TextStyle(
-                  color: isUser ? Colors.black87 : Colors.white,
-                  fontFamily: 'Cairo',
-                  fontSize: 14,
-                ),
+            ),
+            child: Text(
+              message.text,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: isUser ? Colors.black : Colors.white,
+                fontFamily: 'Cairo',
+                fontSize: 13,
+                height: 1.3,
               ),
             ),
           ),
           if (isUser) ...[
             const SizedBox(width: 8),
             const CircleAvatar(
-              radius: 16,
+              radius: 14,
               backgroundImage: AssetImage('assets/images/pr2.jpg'),
             ),
           ],

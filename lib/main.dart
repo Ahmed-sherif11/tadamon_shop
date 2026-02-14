@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tadamon_shop/features/chatbot/presentation/views/chat_view.dart';
-import 'package:tadamon_shop/features/about/presentation/views/about_view.dart';
 import 'package:tadamon_shop/features/donations/presentation/views/donation_view.dart';
 
 import 'generated/l10n.dart';
@@ -30,7 +28,7 @@ class TadamonApp extends StatelessWidget {
         fontFamily: 'Cairo',
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const DonationsView(),
+      home: const DonationView(),
     );
   }
 }

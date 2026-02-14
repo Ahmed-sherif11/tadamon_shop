@@ -1,95 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tadamon_shop/features/donations/data/models/donation_model.dart';
 
 class DonationItem extends StatelessWidget {
-  final String title;
-  final String description;
-  final String code;
-  final IconData icon;
+  final DonationModel donation;
 
-  const DonationItem({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.code,
-    required this.icon,
-  });
+  const DonationItem({super.key, required this.donation});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 343,
+      height: 107,
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(15),
+        color: const Color(0xffF2F4F6),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          GestureDetector(
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child:
+                Icon(donation.icon, color: const Color(0xff27AE60), size: 28),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  donation.name,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      fontFamily: 'Cairo'),
+                ),
+                Text(
+                  donation.subTitle,
+                  style: const TextStyle(
+                      color: Color(0xff8E8E93),
+                      fontSize: 11,
+                      fontFamily: 'Cairo'),
+                ),
+              ],
+            ),
+          ),
+          InkWell(
             onTap: () {
-              Clipboard.setData(ClipboardData(text: code));
-
+              Clipboard.setData(ClipboardData(text: donation.phone));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text("تم نسخ الرقم بنجاح"),
-                    duration: Duration(seconds: 1)),
+                const SnackBar(content: Text('تم نسخ الرقم')),
               );
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F5E9),
+                color: const Color(0xffE9EEF2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.copy, size: 16, color: Colors.grey),
-                  const SizedBox(width: 8),
                   Text(
-                    code,
+                    donation.phone,
                     style: const TextStyle(
-                      color: Color(0xFF27AE60),
+                      color: Color(0xff27AE60),
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.copy, size: 14, color: Color(0xffA0A0A0)),
                 ],
               ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    fontFamily: 'Cairo',
-                  ),
-                ),
-                Text(
-                  description,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 11,
-                    fontFamily: 'Cairo',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFE0E0E0)),
-              color: Colors.white,
-            ),
-            child: Icon(icon, color: const Color(0xFF27AE60), size: 24),
           ),
         ],
       ),

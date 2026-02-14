@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tadamon_shop/features/notifications/data/models/notification_model.dart';
 
 class NotificationItem extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
+  final NotificationModel notification;
 
   const NotificationItem({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
+    required this.notification,
   });
 
   @override
@@ -30,7 +27,7 @@ class NotificationItem extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              icon,
+              notification.icon,
               color: const Color(0xFF2E7D32),
               size: 28,
             ),
@@ -41,7 +38,7 @@ class NotificationItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  notification.title,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -51,7 +48,7 @@ class NotificationItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  subtitle,
+                  notification.subtitle,
                   style: const TextStyle(
                     fontSize: 13,
                     color: Colors.grey,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../generated/l10n.dart';
 import '../../data/models/message_model.dart';
+import '../../data/services/chat_service.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_input_field.dart';
+import '../../../../generated/l10n.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -13,27 +14,84 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final ChatService _chatService = ChatService();
+
+  List<MessageModel> _allMessages = [];
+  bool _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_allMessages.isEmpty) {
+      final local = S.of(context);
+      _allMessages = [
+        MessageModel(
+            text: local.botWelcomeMessage, isUser: false, time: "10:50 ص"),
+      ];
+    }
+  }
+
+  Future<void> _sendMessage() async {
+    if (_controller.text.trim().isEmpty) return;
+    String userMsg = _controller.text.trim();
+
+    setState(() {
+      _allMessages.add(MessageModel(text: userMsg, isUser: true));
+      _allMessages.add(MessageModel(text: "", isUser: false));
+      _isLoading = true;
+    });
+
+    _controller.clear();
+    _scrollToBottom();
+
+    try {
+      String accumulatedText = "";
+      final responseStream = _chatService.getChatResponse(
+          userMsg, _allMessages.sublist(0, _allMessages.length - 2));
+
+      await for (final textChunk in responseStream) {
+        accumulatedText += textChunk;
+        setState(() {
+          _allMessages.last =
+              MessageModel(text: accumulatedText, isUser: false);
+          _isLoading = false;
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      setState(() {
+        _allMessages.last = MessageModel(
+          text: "عذراً، حدث خطأ في الاتصال. تأكد من الإنترنت والمفتاح.",
+          isUser: false,
+        );
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final local = S.of(context);
-
-    final List<MessageModel> messages = [
-      MessageModel(
-          text: local.botWelcomeMessage,
-          isUser: false,
-          time: "اليوم، 10:50 صباحاً"),
-      MessageModel(text: local.userOrderTrack, isUser: true),
-      MessageModel(text: local.botOrderResponse, isUser: false),
-    ];
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        automaticallyImplyLeading: false,
         toolbarHeight: 100,
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             IconButton(
@@ -42,91 +100,58 @@ class _ChatViewState extends State<ChatView> {
               onPressed: () => Navigator.pop(context),
             ),
             const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/pr1.jpg'),
-              radius: 18,
-            ),
+                backgroundImage: AssetImage('assets/images/pr1.jpg'),
+                radius: 18),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  local.smartAssistant,
-                  style: const TextStyle(
-                    color: Color(0xFF2EAB4F),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Cairo',
-                  ),
-                ),
-                Text(
-                  local.activeStatus,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 11,
-                    fontFamily: 'Cairo',
-                  ),
-                ),
+                Text(local.smartAssistant,
+                    style: const TextStyle(
+                        color: Color(0xFF2EAB4F),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold)),
+                Text(local.activeStatus,
+                    style: const TextStyle(color: Colors.grey, fontSize: 10)),
               ],
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.phone_outlined,
-                color: Color(0xFF2EAB4F), size: 26),
-            onPressed: () {},
-          ),
+              icon: const Icon(Icons.phone_outlined, color: Color(0xFF2EAB4F)),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("جاري الاتصال...")));
+              }),
+          // تم تفعيل زرار الفيديو
           IconButton(
-            icon: const Icon(Icons.videocam_outlined,
-                color: Color(0xFF2EAB4F), size: 22),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 5),
+              icon:
+                  const Icon(Icons.videocam_outlined, color: Color(0xFF2EAB4F)),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("بدء مكالمة فيديو...")));
+              }),
         ],
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Column(
-                    children: [
-                      ChatBubble(message: messages[index]),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        child: Center(
-                          child: Text(
-                            messages[index].time ?? "",
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                              fontFamily: 'Cairo',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 25),
-                  child: ChatBubble(message: messages[index]),
-                );
-              },
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              itemCount: _allMessages.length,
+              itemBuilder: (context, index) =>
+                  ChatBubble(message: _allMessages[index]),
             ),
           ),
-          ChatInputField(
-            controller: _controller,
-            onSend: () {
-              if (_controller.text.isNotEmpty) {
-                _controller.clear();
-              }
-            },
-          ),
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+              child: LinearProgressIndicator(
+                  color: Color(0xFF2EAB4F), backgroundColor: Colors.white),
+            ),
+          ChatInputField(controller: _controller, onSend: _sendMessage),
         ],
       ),
     );
