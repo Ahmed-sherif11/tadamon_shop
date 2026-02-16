@@ -10,20 +10,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.12.0
 
   # --- الأيقونات والرسومات ---
   cupertino_icons: ^1.0.8
+  google_generative_ai: ^0.4.7
   flutter_svg: ^2.0.10
+  http:  ^1.2.0
 
   # --- إدارة الحالة (State Management) ---
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
   equatable: ^2.0.7
 
   # --- البرمجة الوظيفية (Clean Arch Core) ---
   dartz: ^0.10.1
 
   # --- حقن التبعيات (Dependency Injection) ---
-  get_it: ^8.0.3
+  get_it: ^9.2.0
 
   # --- التجاوب مع الشاشات (Responsive UI) ---
   flutter_screenutil: ^5.9.3
@@ -38,28 +41,36 @@ dependencies:
   shared_preferences: ^2.3.2
 
   # --- رسائل التنبيه (Toasts) - (جديد ومهم للمتاجر) ---
-  fluttertoast: ^8.2.10
+  fluttertoast: ^9.0.0
 
   # --- الترجمة واللغات (Localization) ---
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
+  flutter_gen: ^5.12.0
+  url_launcher: ^6.3.2
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
+  intl_utils: ^2.8.7
 
 # --- إعدادات فلاتر ---
 flutter:
   uses-material-design: true
+  generate: true
 
   # --- تفعيل المجلدات ---
   assets:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - .env
 
+
+ 
   # --- إعداد الخط العربي (Cairo) ---
   # ملاحظة: لازم تنزل ملف الخط وتحطه في assets/fonts/Cairo-Regular.ttf
   fonts:
