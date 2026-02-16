@@ -1,40 +1,51 @@
-import 'package:google_generative_ai/google_generative_ai.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import '../models/message_model.dart';
 
 class ChatService {
-  final String _apiKey = "AIzaSyCcqrmFYh1qieTA-v_dajBoGyb9971d8uo";
-  late final GenerativeModel _model;
+  final String _apiKey = 'AIzaSyCcqrmFYh1qieTA-v_dajBoGyb9971d8uo';
 
-  ChatService() {
-    _model = GenerativeModel(
-      model: 'gemini-3-flash',
-      apiKey: _apiKey,
-      safetySettings: [
-        SafetySetting(HarmCategory.harassment, HarmBlockThreshold.none),
-        SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.none),
-        SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.none),
-        SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.none),
-      ],
-    );
-  }
+  Uri _endpoint() => Uri.parse(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$_apiKey',
+      );
 
   Stream<String> getChatResponse(
-      String userMessage, List<MessageModel> history) async* {
-    final contentHistory = history.map((m) {
-      if (m.isUser) {
-        return Content.text(m.text);
-      } else {
-        return Content.model([TextPart(m.text)]);
-      }
-    }).toList();
+    String userMessage,
+    List<MessageModel> history,
+  ) async* {
+    try {
+      final url = _endpoint();
 
-    final chat = _model.startChat(history: contentHistory);
-    final responseStream = chat.sendMessageStream(Content.text(userMessage));
+      final body = {
+        "contents": [
+          {
+            "parts": [
+              {"text": userMessage},
+            ],
+          },
+        ],
+      };
 
-    await for (final chunk in responseStream) {
-      if (chunk.text != null) {
-        yield chunk.text!;
+      final res = await http.post(
+        url,
+        headers: const {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
+
+      if (res.statusCode != 200) {
+        yield 'خطأ ${res.statusCode}: ${res.body}';
+        return;
       }
+
+      final data = jsonDecode(res.body);
+
+      final text =
+          data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.toString();
+
+      yield (text == null || text.trim().isEmpty) ? 'لم يصل رد' : text;
+    } catch (e) {
+      yield 'استثناء: $e';
     }
   }
 }
