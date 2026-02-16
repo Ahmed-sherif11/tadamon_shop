@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OtpFieldsItem extends StatelessWidget {
-  const OtpFieldsItem({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -11,14 +10,20 @@ class OtpFieldsItem extends StatelessWidget {
           5,
           (index) => SizedBox(
                 width: 50,
-                child: TextField(
+                child: TextFormField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
-                  maxLength: 1,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(1),
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: (value) {
+                    if (value.length == 1 && index < 4)
+                      FocusScope.of(context).nextFocus();
+                  },
                   decoration: InputDecoration(
-                    counterText: "",
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               )),
