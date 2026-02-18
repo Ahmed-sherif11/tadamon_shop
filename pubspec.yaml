@@ -44,6 +44,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
+  flutter_gen: ^5.12.0
 
 dev_dependencies:
   flutter_test:
@@ -52,12 +53,12 @@ dev_dependencies:
 
 # --- إعدادات فلاتر ---
 flutter:
+ 
   uses-material-design: true
 
   # --- تفعيل المجلدات ---
   assets:
     - assets/images/
-    - assets/icons/
     - assets/fonts/
 
   # --- إعداد الخط العربي (Cairo) ---
