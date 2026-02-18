@@ -2,12 +2,34 @@ import 'package:flutter/material.dart';
 import '../widgets/success_final_view_body.dart';
 
 class SuccessFinalView extends StatelessWidget {
+  const SuccessFinalView({super.key});
+
   @override
   Widget build(BuildContext context) {
+    const Color backgroundColor = Color(0xFFEDF1F3);
+
     return Scaffold(
-      // جعل الـ Scaffold شفاف ليظهر التدرج اللوني في الـ Body
-      backgroundColor: Colors.transparent,
-      body: SuccessFinalViewBody(),
+      backgroundColor: backgroundColor,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/images/Blur.jpg',
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter,
+              color: backgroundColor,
+              colorBlendMode: BlendMode.darken,
+            ),
+          ),
+          const SafeArea(
+            child: SuccessFinalViewBody(),
+          ),
+        ],
+      ),
     );
   }
 }

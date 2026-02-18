@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tadamon_shop/features/auth/presentation/login/views/success_final_view.dart';
 
 class ConfirmButton extends StatelessWidget {
-  ConfirmButton({this.onPressed, this.text});
+  const ConfirmButton({super.key, this.onPressed, this.text});
 
   final VoidCallback? onPressed;
   final String? text;
@@ -14,7 +14,8 @@ class ConfirmButton extends StatelessWidget {
       height: 55,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF4CAF50),
+          backgroundColor: const Color(0xFF4CAF50),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -23,12 +24,13 @@ class ConfirmButton extends StatelessWidget {
             () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SuccessFinalView()),
+                MaterialPageRoute(
+                    builder: (context) => const SuccessFinalView()),
               );
             },
         child: Text(
           text ?? "تأكيد",
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,

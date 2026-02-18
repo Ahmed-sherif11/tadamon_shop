@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 class LoginButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  LoginButton({required this.onPressed});
+  const LoginButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 55,
       child: TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF4CAF50), // نفس لون الزر في التصميم
+          backgroundColor: const Color(0xFF4CAF50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         onPressed: onPressed,
-        child: Text(
+        child: const Text(
           'تسجيل الدخول',
           style: TextStyle(
             color: Colors.white,
