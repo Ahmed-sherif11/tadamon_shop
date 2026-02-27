@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../views/products_view.dart';
+import 'package:tadamon_shop/features/home/presentation/pages/home_page.dart';
+// ignore: unused_import
+import 'package:tadamon_shop/features/home/presentation/view/home_page.dart'; // تأكدي من مسار ملف الهوم عندك
+import '../views/products_view.dart'; // تأكدي من مسار ملف البرودكت فيو
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
@@ -7,7 +10,7 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl, 
+      textDirection: TextDirection.rtl, // لضبط اتجاه السهم والنصوص للعربية
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -19,14 +22,17 @@ class ProductsPage extends StatelessWidget {
             style: TextStyle(
               color: Colors.black, 
               fontWeight: FontWeight.w900, 
-              fontSize: 20, 
+              fontSize: 20,
             ),
           ),
+          // التعديل هنا: السهم هيرجعك لصفحة الهوم مباشرة
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
             onPressed: () {
-            
-              Navigator.pop(context);
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+                (route) => false,
+              );
             },
           ),
         ),
