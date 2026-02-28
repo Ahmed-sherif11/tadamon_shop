@@ -1,1 +1,28 @@
-{}
+{
+  "@@locale": "ar",
+  "app_name": "تضامن",
+  "search_hint": "البحث عن المنتجات أو العلامات التجارية",
+  "summer_sale": "بيع الصيف",
+  "discount_up_to": "خصم يصل إلى 50%",
+  "categories": "فئات",
+  "furniture": "أثاث",
+  "decor": "ديكور",
+  "lighting": "إضاءة",
+  "clothing": "ملابس",
+  "recommended_for_you": "منتجات قد تعجبك",
+  "home": "الرئيسية",
+  "cart": "السلة",
+  "profile": "الحساب",
+
+  "productsTitle": "منتجات",
+  "searchHint": "البحث عن المنتجات",
+  "all": "الجميع",
+  "electronics": "إلكترونيات",
+  "fashion": "موضة",
+  "homeCategory": "الرئيسية",
+  "sortByLatest": "الترتيب: الأحدث",
+  "sortByPopular": "الترتيب: شائع",
+  "sortByPrice": "الترتيب: السعر",
+  "sortByRating": "الترتيب: التقييم",
+  "currency": "دولاراً"
+}

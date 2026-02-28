@@ -1,1 +1,26 @@
-{}
+{
+  "@@locale": "en",
+  "app_name": "Tadamon",
+  "search_hint": "Search for products or brands",
+  "summer_sale": "Summer Sale",
+  "discount_up_to": "Discount up to 50%",
+  "categories": "Categories",
+  "furniture": "Furniture",
+  "decor": "Decor",
+  "lighting": "Lighting",
+  "clothing": "Clothing",
+  "recommended_for_you": "Recommended for you",
+  "home": "Home",
+  "cart": "Cart",
+  "profile": "Profile",
+
+  "productsTitle": "Products",
+  "searchHint": "Search Products",
+  "all": "All",
+  "electronics": "Electronics",
+  "fashion": "Fashion",
+  "homeCategory": "Home",
+  "currency": "USD"
+
+
+}
