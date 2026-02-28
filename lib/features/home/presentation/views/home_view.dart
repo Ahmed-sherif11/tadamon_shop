@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+// ignore: unused_import
+import '../../../product_details/presentation/view/product_details_view.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
-  
   final Color figmaGreen = const Color(0xFF618561);
-  
-  
   final Color lightBackgroundGreen = const Color(0xFFEBF0EB);
 
   @override
@@ -16,13 +16,12 @@ class HomeView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: lightBackgroundGreen, 
+                color: lightBackgroundGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
@@ -30,7 +29,7 @@ class HomeView extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "البحث عن المنتجات أو العلامات التجارية",
                   hintStyle: const TextStyle(fontSize: 13, color: Colors.black54),
-                  prefixIcon: Icon(Icons.search, color: figmaGreen), 
+                  prefixIcon: Icon(Icons.search, color: figmaGreen),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 ),
@@ -38,7 +37,6 @@ class HomeView extends StatelessWidget {
             ),
           ),
 
-          
           SizedBox(
             height: 195,
             child: ListView(
@@ -57,7 +55,6 @@ class HomeView extends StatelessWidget {
             child: Text("الفئات", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
           ),
 
-          
           _buildCategories(),
 
           const Padding(
@@ -65,8 +62,7 @@ class HomeView extends StatelessWidget {
             child: Text("منتجات قد تعجبك", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
           ),
 
-          // 4. قسم المنتجات
-          _buildProducts(),
+          _buildProducts(context),
           const SizedBox(height: 30),
         ],
       ),
@@ -112,21 +108,16 @@ class HomeView extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 6),
             padding: const EdgeInsets.symmetric(horizontal: 18),
             decoration: BoxDecoration(
-              color: lightBackgroundGreen, 
+              color: lightBackgroundGreen,
               borderRadius: BorderRadius.circular(25),
             ),
             child: Row(
               children: [
-                
-                Icon(
-                  cats[i]['i'] as IconData,
-                  color: Colors.black, 
-                  size: 20,
-                ),
+                Icon(cats[i]['i'] as IconData, color: Colors.black, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  cats[i]['n'] as String, 
-                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)
+                  cats[i]['n'] as String,
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ],
             ),
@@ -136,7 +127,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildProducts() {
+  Widget _buildProducts(BuildContext context) {
     final prods = [
       {"t": "أريكة مريحة", "p": "499 دولار", "img": "assets/images/sofa.jpg"},
       {"t": "الإضاءة المحيطة", "p": "129 دولار", "img": "assets/images/lamp.jpg"},
@@ -149,22 +140,47 @@ class HomeView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: prods.length,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        itemBuilder: (context, i) => Container(
-          width: 160,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(prods[i]['img']!, height: 210, width: 160, fit: BoxFit.cover),
+        itemBuilder: (context, i) => GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProductDetailsView(),
               ),
-              const SizedBox(height: 6),
-              Text(prods[i]['t']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              Text(prods[i]['p']!, style: TextStyle(color: figmaGreen, fontWeight: FontWeight.bold, fontSize: 12)),
-            ],
+            );
+          },
+          child: Container(
+            width: 160,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(prods[i]['img']!, height: 210, width: 160, fit: BoxFit.cover),
+                ),
+                const SizedBox(height: 6),
+                Text(prods[i]['t']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text(prods[i]['p']!, style: TextStyle(color: figmaGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// هنا التعديل الوحيد: تعريف ProductDetailsView كـ Widget
+class ProductDetailsView extends StatelessWidget {
+  const ProductDetailsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("تفاصيل المنتج")),
+      body: const Center(
+        child: Text("هنا تفاصيل المنتج ✅"),
       ),
     );
   }

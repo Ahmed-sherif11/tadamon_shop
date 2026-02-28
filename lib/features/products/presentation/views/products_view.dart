@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-// تأكدي أن المسارات دي صحيحة حسب مشروعك
+
+// ignore: unused_import
+import '../../../product_details/presentation/view/product_details_view.dart';
 import 'package:tadamon_shop/features/products/presentation/widgets/filter_chip_item.dart';
 import 'package:tadamon_shop/features/products/presentation/widgets/product_card.dart';
 
@@ -19,13 +21,14 @@ class ProductsView extends StatelessWidget {
 
     return CustomScrollView(
       slivers: [
+        
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFEBF0EB), 
+                color: const Color(0xFFEBF0EB),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const TextField(
@@ -40,6 +43,7 @@ class ProductsView extends StatelessWidget {
             ),
           ),
         ),
+
         SliverToBoxAdapter(
           child: SizedBox(
             height: 35,
@@ -55,14 +59,15 @@ class ProductsView extends StatelessWidget {
             ),
           ),
         ),
+
+        
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, 
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     _buildSortBtn("الترتيب: الأحدث"),
                     const SizedBox(width: 12),
@@ -71,7 +76,6 @@ class ProductsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     _buildSortBtn("الترتيب: السعر"),
                     const SizedBox(width: 12),
@@ -82,6 +86,8 @@ class ProductsView extends StatelessWidget {
             ),
           ),
         ),
+
+        
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           sliver: SliverGrid(
@@ -92,10 +98,20 @@ class ProductsView extends StatelessWidget {
               childAspectRatio: 173 / 242,
             ),
             delegate: SliverChildBuilderDelegate(
-              (context, index) => ProductCard(
-                name: products[index]["n"]!,
-                price: products[index]["p"]!,
-                imagePath: products[index]["img"]!,
+              (context, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProductDetailsView(),
+                    ),
+                  );
+                },
+                child: ProductCard(
+                  name: products[index]["n"]!,
+                  price: products[index]["p"]!,
+                  imagePath: products[index]["img"]!,
+                ),
               ),
               childCount: products.length,
             ),
@@ -104,14 +120,15 @@ class ProductsView extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSortBtn(String text) {
     return Container(
       width: 131,
       height: 32,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFEBF0EB), 
-        borderRadius: BorderRadius.circular(20), 
+        color: const Color(0xFFEBF0EB),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,6 +136,21 @@ class ProductsView extends StatelessWidget {
           Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
           const Icon(Icons.keyboard_arrow_down, size: 16),
         ],
+      ),
+    );
+  }
+}
+
+
+class ProductDetailsView extends StatelessWidget {
+  const ProductDetailsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("تفاصيل المنتج")),
+      body: const Center(
+        child: Text("هنا تفاصيل المنتج ✅"),
       ),
     );
   }
