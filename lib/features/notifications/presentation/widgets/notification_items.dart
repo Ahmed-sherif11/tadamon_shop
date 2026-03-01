@@ -12,27 +12,28 @@ class NotificationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      margin: const EdgeInsets.only(bottom: 40),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F8F9),
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            height: 60,
+            width: 60,
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
             child: Icon(
               notification.icon,
-              color: const Color(0xFF2E7D32),
-              size: 28,
+              color: const Color(0xFF2EAB4F),
+              size: 30,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,18 +41,20 @@ class NotificationItem extends StatelessWidget {
                 Text(
                   notification.title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Cairo',
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   notification.subtitle,
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
                   style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
+                    fontSize: 14,
+                    color: Color(0xFF9E9E9E),
                     fontFamily: 'Cairo',
                     height: 1.4,
                   ),

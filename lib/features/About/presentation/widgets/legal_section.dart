@@ -18,12 +18,12 @@ class LegalSection extends StatelessWidget {
         _buildLegalItem(
           context,
           S.of(context).termsOfUse,
-          S.of(context).termsContent, // نستخدم الـ Key اللي في الـ l10n
+          S.of(context).termsContent,
         ),
         _buildLegalItem(
           context,
           S.of(context).privacyPolicy,
-          S.of(context).privacyContent, // نستخدم الـ Key اللي في الـ l10n
+          S.of(context).privacyContent,
         ),
       ],
     );
