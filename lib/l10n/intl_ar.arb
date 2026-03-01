@@ -1,1 +1,13 @@
-{}
+{
+  
+  "smartAssistant": "المساعد الذكي",
+  "activeStatus": "نشط",
+  "botWelcomeMessage": "مرحباً! أنا مساعدك الذكي. كيف يمكنني خدمتك اليوم؟",
+  "userOrderTrack": "مرحباً! أود تتبع طلبي الأخير",
+  "botOrderResponse": "بالتأكيد! هل يمكنك تزويدي برقم الطلب؟",
+  "typeMessageHint": "الرسالة...",
+  "today": "اليوم",
+  "am": "صباحاً",
+  "pm": "مساءً"
+
+}
